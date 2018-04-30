@@ -24,7 +24,8 @@ const cakes = (
           image: action.payload.image,
           time: action.payload.time,
           level: action.payload.level,
-          ingArray: action.payload.ingArray
+          ingArray: action.payload.ingArray,
+          favorite: action.payload.favorite
         }
       ];
       break;
@@ -37,15 +38,38 @@ const cakes = (
           el.cakeName.toLowerCase().search(action.payload.toLowerCase()) !== -1
       );
       break;
-    case "FILTER_CAKES_BY_TIME":
-      state = state.filter(
-        el => el.time.toLowerCase().search(action.payload.toLowerCase()) !== -1
-      );
+    case "FILTER_CAKES_BY_TIME": {
+      let arr = state.slice();
+      state = [];
+      action.payload.map(el => {
+        arr.map(elem => {
+          if (el === elem.time) {
+            state = [...state, elem];
+          }
+        });
+      });
       break;
-    case "FILTER_CAKES_BY_LEVEL":
-      state = state.filter(
-        el => el.level.toLowerCase().search(action.payload.toLowerCase()) !== -1
-      );
+    }
+    case "FILTER_CAKES_BY_LEVEL": {
+      let arr = state.slice();
+      state = [];
+      action.payload.map(el => {
+        arr.map(elem => {
+          if (el === elem.level) {
+            state = [...state, elem];
+          }
+        });
+      });
+      break;
+    }
+    case "MY_FAVORITE_CAKES":
+      state = [
+        ...state,
+        {
+          ...state,
+          favorite: action.payload
+        }
+      ];
       break;
   }
   return state;

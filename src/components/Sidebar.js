@@ -16,6 +16,15 @@ import {
 } from "../actions/cakeActions";
 
 class Sidebar extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      checkboxLevelState: ["", "", ""],
+      checkboxTimeState: ["", "", "", ""]
+    };
+  }
+
   handleChangeInput = e => {
     if (e.target.value === "") {
       this.props.resetStateCakesList();
@@ -28,25 +37,43 @@ class Sidebar extends React.Component {
   };
 
   handleTimeCheckbox = e => {
-    if (e.target.checked === true) {
-      this.props.resetStateCakesList();
-      this.props.getCakes();
-      this.props.filterCakesByTime(e.target.value);
+    this.props.resetStateCakesList();
+    this.props.getCakes();
+    let value = parseInt(e.target.name);
+    let arr = this.state.checkboxTimeState.slice();
+    if (e.target.checked) {
+      arr[value] = e.target.value;
     } else {
-      this.props.resetStateCakesList();
-      this.props.getCakes();
+      arr[value] = "";
     }
+    arr.map(el => {
+      if (el) {
+        this.props.filterCakesByTime(arr);
+      }
+    });
+    this.setState({
+      checkboxTimeState: arr
+    });
   };
 
   handleLevelCheckbox = e => {
-    if (e.target.checked === true) {
-      this.props.resetStateCakesList();
-      this.props.getCakes();
-      this.props.filterCakesByLevel(e.target.value);
+    this.props.resetStateCakesList();
+    this.props.getCakes();
+    let value = parseInt(e.target.name);
+    let arr = this.state.checkboxLevelState.slice();
+    if (e.target.checked) {
+      arr[value] = e.target.value;
     } else {
-      this.props.resetStateCakesList();
-      this.props.getCakes();
+      arr[value] = "";
     }
+    arr.map(el => {
+      if (el) {
+        this.props.filterCakesByLevel(arr);
+      }
+    });
+    this.setState({
+      checkboxLevelState: arr
+    });
   };
 
   render() {
@@ -78,18 +105,19 @@ class Sidebar extends React.Component {
             style={{
               marginTop: "40px"
             }}
+            onClick={this.handleTimeCheckbox}
           >
             <ControlLabel>Czas przygotowania:</ControlLabel>
-            <Checkbox onClick={this.handleTimeCheckbox} value="15 min">
+            <Checkbox name="0" value="15 min">
               15 minut
             </Checkbox>
-            <Checkbox onClick={this.handleTimeCheckbox} value="30 min">
+            <Checkbox name="1" value="30 min">
               30 minut
             </Checkbox>
-            <Checkbox onClick={this.handleTimeCheckbox} value="45 min">
+            <Checkbox name="2" value="45 min">
               45 minut
             </Checkbox>
-            <Checkbox onClick={this.handleTimeCheckbox} value="1 godzina">
+            <Checkbox name="3" value="1 godzina">
               1 godzina
             </Checkbox>
           </FormGroup>
@@ -97,15 +125,16 @@ class Sidebar extends React.Component {
             style={{
               marginTop: "40px"
             }}
+            onClick={this.handleLevelCheckbox}
           >
             <ControlLabel>Poziom trudności:</ControlLabel>
-            <Checkbox onClick={this.handleLevelCheckbox} value="łatwy">
+            <Checkbox name="0" value="łatwy">
               łatwy
             </Checkbox>
-            <Checkbox onClick={this.handleLevelCheckbox} value="średni">
+            <Checkbox name="1" value="średni">
               średni
             </Checkbox>
-            <Checkbox onClick={this.handleLevelCheckbox} value="trudny">
+            <Checkbox name="2" value="trudny">
               trudny
             </Checkbox>
           </FormGroup>

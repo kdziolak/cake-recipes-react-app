@@ -67,3 +67,20 @@ export function filterCakesByLevel(value) {
     payload: value
   };
 }
+
+export function addToFavorite(cakeName, favorite) {
+  return dispatch => {
+    let db = fire.database().ref("Recipes");
+    db.on("child_added", snap => {
+      if (snap.val().cakeName === cakeName) {
+        db.child(snap.val().ID_Cake).update({
+          favorite: !snap.val().favorite
+        });
+        dispatch({
+          type: "MY_FAVORITE_CAKES",
+          payload: !snap.val().favorite
+        });
+      }
+    });
+  };
+}

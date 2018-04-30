@@ -1,7 +1,11 @@
 import React from "react";
-import { Row, Col, Panel, Image } from "react-bootstrap";
+import { Row, Col, Panel, Image, Button } from "react-bootstrap";
 import { connect } from "react-redux";
-import { getCakes, resetStateCakesList } from "../actions/cakeActions";
+import {
+  getCakes,
+  resetStateCakesList,
+  addToFavorite
+} from "../actions/cakeActions";
 import { Link } from "react-router-dom";
 
 class CakesList extends React.Component {
@@ -24,6 +28,29 @@ class CakesList extends React.Component {
       cakesArray: nextProps.cakesArray
     });
   }
+
+  handleButtonClick = e => {
+    e.preventDefault();
+
+    this.props.cakesArray.map(el => {
+      if (
+        e.target.parentNode.childNodes[1].textContent === el.cakeName &&
+        el.favorite === undefined
+      ) {
+        this.props.addToFavorite(
+          e.target.parentNode.childNodes[1].textContent,
+          false
+        );
+      } else if (
+        e.target.parentNode.childNodes[1].textContent === el.cakeName
+      ) {
+        this.props.addToFavorite(
+          e.target.parentNode.childNodes[1].textContent,
+          !el.favorite
+        );
+      }
+    });
+  };
 
   showCakesList = props => {
     if (props.id === undefined) return;
@@ -68,8 +95,22 @@ class CakesList extends React.Component {
               }}
             >
               {props.prepareDescription}
-              
             </p>
+            <Button
+              onClick={this.handleButtonClick}
+              style={{
+                padding: "1px 5px 1px 5px",
+                alignSelf: "left",
+                marginLeft: "10px",
+                marginBottom: "10px",
+                color: "white",
+                fontSize: "15px",
+                outline: "none"
+              }}
+              bsStyle={props.favorite ? "warning" : ""}
+            >
+              &#9733;
+            </Button>
           </Panel>
         </Link>
       </Col>
@@ -83,14 +124,16 @@ class CakesList extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    cakesArray: state.cakes
+    cakesArray: state.cakes,
+    favoriteCake: state.cakes.favorite
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     getCakes: () => dispatch(getCakes()),
-    resetStateCakesList: () => dispatch(resetStateCakesList())
+    resetStateCakesList: () => dispatch(resetStateCakesList()),
+    addToFavorite: cakeName => dispatch(addToFavorite(cakeName))
   };
 };
 

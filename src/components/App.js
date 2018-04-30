@@ -18,12 +18,12 @@ export default class App extends React.Component {
         </Row>
         <Row>
           <Col md={2}>
-            <Sidebar />
+            <Route exact path="/" component={Sidebar} />
           </Col>
           <Col md={1} />
           <Col md={9}>
             <Route exact path="/" component={CakesList} />
-            <Route exact path="/dodaj" component={AddNewCake} />
+            <Route path="/dodaj" component={AddNewCake} />
             <Route path="/Przepisy/:id" component={CakeRecipe} />
           </Col>
         </Row>
