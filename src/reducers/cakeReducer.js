@@ -63,13 +63,13 @@ const cakes = (
       break;
     }
     case "MY_FAVORITE_CAKES":
-      state = [
-        ...state,
-        {
-          ...state,
-          favorite: action.payload
+      let arr = state.slice();
+      arr.map(el => {
+        if (el.id === action.payload.ID_Cake) {
+          el.favorite = action.payload.favorite;
         }
-      ];
+      });
+      state = arr;
       break;
   }
   return state;

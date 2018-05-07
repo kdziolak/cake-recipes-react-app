@@ -20,9 +20,11 @@ class CakesList extends React.Component {
   componentWillMount() {
     this.props.getCakes();
   }
+
   componentWillUnmount() {
     this.props.resetStateCakesList();
   }
+
   componentWillReceiveProps(nextProps) {
     this.setState({
       cakesArray: nextProps.cakesArray
@@ -31,24 +33,8 @@ class CakesList extends React.Component {
 
   handleButtonClick = e => {
     e.preventDefault();
-
     this.props.cakesArray.map(el => {
-      if (
-        e.target.parentNode.childNodes[1].textContent === el.cakeName &&
-        el.favorite === undefined
-      ) {
-        this.props.addToFavorite(
-          e.target.parentNode.childNodes[1].textContent,
-          false
-        );
-      } else if (
-        e.target.parentNode.childNodes[1].textContent === el.cakeName
-      ) {
-        this.props.addToFavorite(
-          e.target.parentNode.childNodes[1].textContent,
-          !el.favorite
-        );
-      }
+      this.props.addToFavorite(e.target.parentNode.childNodes[1].textContent);
     });
   };
 
@@ -124,8 +110,7 @@ class CakesList extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    cakesArray: state.cakes,
-    favoriteCake: state.cakes.favorite
+    cakesArray: state.cakes
   };
 };
 
