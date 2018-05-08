@@ -33,15 +33,23 @@ class CakesList extends React.Component {
 
   handleButtonClick = e => {
     e.preventDefault();
-    this.props.cakesArray.map(el => {
-      this.props.addToFavorite(e.target.parentNode.childNodes[1].textContent);
-    });
+    if (e.target.classList.contains("btn-warning")) {
+      this.props.addToFavorite(
+        e.target.parentNode.childNodes[1].textContent,
+        false
+      );
+    } else {
+      this.props.addToFavorite(
+        e.target.parentNode.childNodes[1].textContent,
+        true
+      );
+    }
   };
 
-  showCakesList = props => {
+  showCakesList = (props, i) => {
     if (props.id === undefined) return;
     return (
-      <Col md={3}>
+      <Col md={3} key={i}>
         <Link
           style={{
             textDecoration: "none"
@@ -93,7 +101,7 @@ class CakesList extends React.Component {
                 fontSize: "15px",
                 outline: "none"
               }}
-              bsStyle={props.favorite ? "warning" : ""}
+              bsStyle={props.favorite ? "warning" : null}
             >
               &#9733;
             </Button>
@@ -118,7 +126,7 @@ const mapDispatchToProps = dispatch => {
   return {
     getCakes: () => dispatch(getCakes()),
     resetStateCakesList: () => dispatch(resetStateCakesList()),
-    addToFavorite: cakeName => dispatch(addToFavorite(cakeName))
+    addToFavorite: (cakeName, val) => dispatch(addToFavorite(cakeName, val))
   };
 };
 

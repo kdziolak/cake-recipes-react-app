@@ -62,8 +62,9 @@ const cakes = (
       });
       break;
     }
-    case "MY_FAVORITE_CAKES":
+    case "MY_FAVORITE_CAKES": {
       let arr = state.slice();
+      state = [];
       arr.map(el => {
         if (el.id === action.payload.ID_Cake) {
           el.favorite = action.payload.favorite;
@@ -71,6 +72,7 @@ const cakes = (
       });
       state = arr;
       break;
+    }
   }
   return state;
 };
