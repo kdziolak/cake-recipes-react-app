@@ -117,6 +117,7 @@ class CakesList extends React.Component {
 }
 
 const mapStateToProps = state => {
+  console.log(state.cakes);
   return {
     cakesArray: state.cakes
   };
