@@ -67,22 +67,22 @@ export function filterCakesByLevel(value) {
     payload: value
   };
 }
-
-export function addToFavorite(cakeName, state) {
-  return dispatch => {
-    let db = fire.database().ref("Recipes");
-    let val = [];
-    db.on("child_added", snap => {
-      if (snap.val().cakeName === cakeName) {
-        db.child(snap.val().ID_Cake).update({
-          favorite: state
-        });
-      }
-      val = [...val, snap.val()];
-    });
-    dispatch({
-      type: "MY_FAVORITE_CAKES",
-      payload: val
-    });
+export function showFavoriteRecipes(value) {
+  return {
+    type: "SHOW_FAVORITE_RECIPES",
+    payload: value
   };
+}
+
+export function addToFavorite(cakeName) {
+  let db = fire.database().ref("Recipes");
+  let val = [];
+  db.on("child_added", snap => {
+    if (snap.val().cakeName === cakeName) {
+      db.child(snap.val().ID_Cake).update({
+        favorite: !snap.val().favorite
+      });
+      val = snap.val();
+    }
+  });
 }

@@ -11,6 +11,7 @@ import {
   filterCakesByCakeName,
   filterCakesByTime,
   filterCakesByLevel,
+  showFavoriteRecipes,
   getCakes,
   resetStateCakesList
 } from "../actions/cakeActions";
@@ -20,8 +21,10 @@ class Sidebar extends React.Component {
     super(props);
 
     this.state = {
-      checkboxLevelState: ["", "", ""],
-      checkboxTimeState: ["", "", "", ""]
+      checkbox: {
+        checkboxLevelState: ["", "", ""],
+        checkboxTimeState: ["", "", "", ""]
+      }
     };
   }
 
@@ -36,43 +39,45 @@ class Sidebar extends React.Component {
     }
   };
 
-  handleTimeCheckbox = e => {
+  handleCheckbox = e => {
+    let whatClassName = e.target.parentNode.parentNode.parentNode.classList;
     this.props.resetStateCakesList();
     this.props.getCakes();
     let value = parseInt(e.target.name);
-    let arr = this.state.checkboxTimeState.slice();
-    if (e.target.checked) {
-      arr[value] = e.target.value;
-    } else {
-      arr[value] = "";
-    }
-    arr.map(el => {
-      if (el) {
-        this.props.filterCakesByTime(arr);
+    let arr = this.state.checkbox;
+    if (whatClassName.contains("level-form")) {
+      if (e.target.checked) {
+        arr.checkboxLevelState[value] = e.target.value;
+      } else {
+        arr.checkboxLevelState[value] = "";
       }
-    });
-    this.setState({
-      checkboxTimeState: arr
-    });
-  };
-
-  handleLevelCheckbox = e => {
-    this.props.resetStateCakesList();
-    this.props.getCakes();
-    let value = parseInt(e.target.name);
-    let arr = this.state.checkboxLevelState.slice();
-    if (e.target.checked) {
-      arr[value] = e.target.value;
-    } else {
-      arr[value] = "";
-    }
-    arr.map(el => {
-      if (el) {
-        this.props.filterCakesByLevel(arr);
+      arr.checkboxLevelState.map(el => {
+        if (el) {
+          if (whatClassName.contains("level-form")) {
+            this.props.filterCakesByLevel(arr);
+          } else if (whatClassName.contains("time-form")) {
+            this.props.filterCakesByTime(arr);
+          }
+        }
+      });
+    } else if (whatClassName.contains("time-form")) {
+      if (e.target.checked) {
+        arr.checkboxTimeState[value] = e.target.value;
+      } else {
+        arr.checkboxTimeState[value] = "";
       }
-    });
+      arr.checkboxTimeState.map(el => {
+        if (el) {
+          if (whatClassName.contains("level-form")) {
+            this.props.filterCakesByLevel(arr);
+          } else if (whatClassName.contains("time-form")) {
+            this.props.filterCakesByTime(arr);
+          }
+        }
+      });
+    }
     this.setState({
-      checkboxLevelState: arr
+      checkbox: arr
     });
   };
 
@@ -105,7 +110,8 @@ class Sidebar extends React.Component {
             style={{
               marginTop: "40px"
             }}
-            onClick={this.handleTimeCheckbox}
+            className="time-form"
+            onClick={this.handleCheckbox}
           >
             <ControlLabel>Czas przygotowania:</ControlLabel>
             <Checkbox name="0" value="15 min">
@@ -125,7 +131,8 @@ class Sidebar extends React.Component {
             style={{
               marginTop: "40px"
             }}
-            onClick={this.handleLevelCheckbox}
+            className="level-form"
+            onClick={this.handleCheckbox}
           >
             <ControlLabel>Poziom trudności:</ControlLabel>
             <Checkbox name="0" value="łatwy">
@@ -136,6 +143,17 @@ class Sidebar extends React.Component {
             </Checkbox>
             <Checkbox name="2" value="trudny">
               trudny
+            </Checkbox>
+          </FormGroup>
+          <FormGroup
+            style={{
+              marginTop: "40px"
+            }}
+            onClick={this.showFavoriteRecipes}
+          >
+            <ControlLabel>Ulubione przepisy:</ControlLabel>
+            <Checkbox name="0" value="pokaz">
+              Pokaż
             </Checkbox>
           </FormGroup>
         </form>
@@ -154,7 +172,8 @@ const mapDispatchToProps = dispatch => {
     resetStateCakesList: () => dispatch(resetStateCakesList()),
     filterCakesByCakeName: value => dispatch(filterCakesByCakeName(value)),
     filterCakesByTime: value => dispatch(filterCakesByTime(value)),
-    filterCakesByLevel: value => dispatch(filterCakesByLevel(value))
+    filterCakesByLevel: value => dispatch(filterCakesByLevel(value)),
+    showFavoriteRecipes: value => dispatch(showFavoriteRecipes(value))
   };
 };
 

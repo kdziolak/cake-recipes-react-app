@@ -33,17 +33,16 @@ class CakesList extends React.Component {
 
   handleButtonClick = e => {
     e.preventDefault();
-    if (e.target.classList.contains("btn-warning")) {
-      this.props.addToFavorite(
-        e.target.parentNode.childNodes[1].textContent,
-        false
-      );
-    } else {
-      this.props.addToFavorite(
-        e.target.parentNode.childNodes[1].textContent,
-        true
-      );
-    }
+    this.props.addToFavorite(e.target.parentNode.childNodes[1].textContent);
+    let arr = this.state.cakesArray.slice();
+    arr.forEach(el => {
+      if (el.cakeName === e.target.parentNode.childNodes[1].textContent) {
+        el.favorite = !el.favorite;
+      }
+    });
+    this.setState({
+      cakesArray: arr
+    });
   };
 
   showCakesList = (props, i) => {
@@ -117,7 +116,6 @@ class CakesList extends React.Component {
 }
 
 const mapStateToProps = state => {
-  console.log(state.cakes);
   return {
     cakesArray: state.cakes
   };
@@ -127,7 +125,7 @@ const mapDispatchToProps = dispatch => {
   return {
     getCakes: () => dispatch(getCakes()),
     resetStateCakesList: () => dispatch(resetStateCakesList()),
-    addToFavorite: (cakeName, val) => dispatch(addToFavorite(cakeName, val))
+    addToFavorite: cakeName => addToFavorite(cakeName)
   };
 };
 

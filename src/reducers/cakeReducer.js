@@ -7,7 +7,8 @@ const cakes = (
       image: "",
       time: "",
       level: "",
-      ingArray: []
+      ingArray: [],
+      favorite: false
     }
   ],
   action = {}
@@ -41,7 +42,7 @@ const cakes = (
     case "FILTER_CAKES_BY_TIME": {
       let arr = state.slice();
       state = [];
-      action.payload.map(el => {
+      action.payload.checkboxTimeState.map(el => {
         arr.map(elem => {
           if (el === elem.time) {
             state = [...state, elem];
@@ -53,7 +54,8 @@ const cakes = (
     case "FILTER_CAKES_BY_LEVEL": {
       let arr = state.slice();
       state = [];
-      action.payload.map(el => {
+      console.log(action.payload.checkboxLevelState);
+      action.payload.checkboxLevelState.map(el => {
         arr.map(elem => {
           if (el === elem.level) {
             state = [...state, elem];
@@ -65,14 +67,16 @@ const cakes = (
     case "MY_FAVORITE_CAKES": {
       let arr = state.slice();
       state = [];
-      action.payload.map(el => {
-        arr.forEach(elem => {
-          if (el.favorite !== elem.favorite && elem.id === el.ID_Cake) {
-            elem.favorite = el.favorite;
-          }
-        });
+      let val = "";
+      arr.map((el, i) => {
+        if (el.cakeName === action.payload.cakeName) {
+          val = el;
+        }
       });
-      state = arr;
+      let index = arr.indexOf(val);
+      arr[index] = action.payload;
+      console.log(arr);
+      state = [...arr, action.payload];
       break;
     }
   }
