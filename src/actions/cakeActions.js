@@ -57,13 +57,13 @@ export function filterCakesByCakeName(value) {
 }
 export function filterCakesByTime(value) {
   return {
-    type: "FILTER_CAKES_BY_TIME",
+    type: "FILTER_CAKES",
     payload: value
   };
 }
 export function filterCakesByLevel(value) {
   return {
-    type: "FILTER_CAKES_BY_LEVEL",
+    type: "FILTER_CAKES",
     payload: value
   };
 }

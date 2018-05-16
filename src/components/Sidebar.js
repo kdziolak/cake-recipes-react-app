@@ -21,10 +21,8 @@ class Sidebar extends React.Component {
     super(props);
 
     this.state = {
-      checkbox: {
-        checkboxLevelState: ["", "", ""],
-        checkboxTimeState: ["", "", "", ""]
-      }
+      checkboxLevelValue: ["", "", ""],
+      checkboxTimeValue: ["", "", "", ""]
     };
   }
 
@@ -41,44 +39,51 @@ class Sidebar extends React.Component {
 
   handleCheckbox = e => {
     let whatClassName = e.target.parentNode.parentNode.parentNode.classList;
-    this.props.resetStateCakesList();
-    this.props.getCakes();
     let value = parseInt(e.target.name);
-    let arr = this.state.checkbox;
+    let arr = [];
+    let concat = "";
+    let notValueCheckbox = true;
     if (whatClassName.contains("level-form")) {
-      if (e.target.checked) {
-        arr.checkboxLevelState[value] = e.target.value;
-      } else {
-        arr.checkboxLevelState[value] = "";
-      }
-      arr.checkboxLevelState.map(el => {
-        if (el) {
-          if (whatClassName.contains("level-form")) {
-            this.props.filterCakesByLevel(arr);
-          } else if (whatClassName.contains("time-form")) {
-            this.props.filterCakesByTime(arr);
-          }
+      arr = this.state.checkboxLevelValue.slice();
+    } else if (whatClassName.contains("time-form")) {
+      arr = this.state.checkboxTimeValue.slice();
+    }
+    if (e.target.checked) {
+      arr[value] = e.target.value;
+    } else {
+      arr[value] = "";
+    }
+    arr.map(el => {
+      if (el) {
+        notValueCheckbox = false;
+
+        if (whatClassName.contains("level-form")) {
+          concat = arr.concat(this.state.checkboxTimeValue);
+          this.props.resetStateCakesList();
+          this.props.getCakes();
+          this.props.filterCakesByLevel(concat);
+        } else if (whatClassName.contains("time-form")) {
+          concat = arr.concat(this.state.checkboxLevelValue);
+          this.props.resetStateCakesList();
+          this.props.getCakes();
+          this.props.filterCakesByTime(concat);
         }
+      }
+
+      if (notValueCheckbox) {
+        this.props.resetStateCakesList();
+        this.props.getCakes();
+      }
+    });
+    if (whatClassName.contains("level-form")) {
+      this.setState({
+        checkboxLevelValue: arr
       });
     } else if (whatClassName.contains("time-form")) {
-      if (e.target.checked) {
-        arr.checkboxTimeState[value] = e.target.value;
-      } else {
-        arr.checkboxTimeState[value] = "";
-      }
-      arr.checkboxTimeState.map(el => {
-        if (el) {
-          if (whatClassName.contains("level-form")) {
-            this.props.filterCakesByLevel(arr);
-          } else if (whatClassName.contains("time-form")) {
-            this.props.filterCakesByTime(arr);
-          }
-        }
+      this.setState({
+        checkboxTimeValue: arr
       });
     }
-    this.setState({
-      checkbox: arr
-    });
   };
 
   render() {

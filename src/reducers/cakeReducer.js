@@ -42,7 +42,7 @@ const cakes = (
     case "FILTER_CAKES_BY_TIME": {
       let arr = state.slice();
       state = [];
-      action.payload.checkboxTimeState.map(el => {
+      action.payload.map(el => {
         arr.map(elem => {
           if (el === elem.time) {
             state = [...state, elem];
@@ -51,17 +51,17 @@ const cakes = (
       });
       break;
     }
-    case "FILTER_CAKES_BY_LEVEL": {
+    case "FILTER_CAKES": {
       let arr = state.slice();
       state = [];
-      console.log(action.payload.checkboxLevelState);
-      action.payload.checkboxLevelState.map(el => {
+      action.payload.map(el => {
         arr.map(elem => {
-          if (el === elem.level) {
+          if (el === elem.level || el === elem.time) {
             state = [...state, elem];
           }
         });
       });
+
       break;
     }
     case "MY_FAVORITE_CAKES": {
@@ -75,7 +75,6 @@ const cakes = (
       });
       let index = arr.indexOf(val);
       arr[index] = action.payload;
-      console.log(arr);
       state = [...arr, action.payload];
       break;
     }
