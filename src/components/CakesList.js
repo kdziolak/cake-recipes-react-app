@@ -7,6 +7,35 @@ import {
   addToFavorite
 } from "../actions/cakeActions";
 import { Link } from "react-router-dom";
+import styled from "styled-components";
+
+const StyledPanel = styled(Panel)`
+  padding: 20px;
+`;
+const CardPanel = styled(Panel)`
+  background-color: #fbfdfe;
+  padding: 10px;
+  display: "flex";
+  flex-direction: column;
+  jusify-content: center;
+  align-items: center;
+  text-align: center;
+  min-height: 250px;
+  box-shadow: 0 0 4px 0px black
+  transition: 0.1s linear;
+  &:hover {
+    transform: scale(1.05);
+  }
+`;
+const StyledImage = styled(Image)`
+  border-radius: 50%;
+  width: 60%;
+  height: 110px;
+  box-shadow: 0 0 10px 0px black
+`;
+const StyledH3 = styled.h3`
+  color: #26C6DA;
+`;
 
 class CakesList extends React.Component {
   constructor(props) {
@@ -27,7 +56,11 @@ class CakesList extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      cakesArray: nextProps.cakesArray
+      cakesArray: nextProps.cakesArray.sort((cakeA, cakeB) => {
+        if (cakeA.cakeName < cakeB.cakeName) return -1;
+        if (cakeA.cakeName > cakeB.cakeName) return 1;
+        return 0;
+      })
     });
   }
 
@@ -55,32 +88,15 @@ class CakesList extends React.Component {
           }}
           to={`/Przepisy/${props.id}`}
         >
-          <Panel
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              jusifyContent: "center",
-              alignItems: "center",
-              textAlign: "center",
-              minHeight: "250px"
-            }}
+          <CardPanel
           >
-            <Image
-              style={{
-                width: "100%",
-                height: "110px"
-              }}
+            <StyledImage
               src={props.image}
               alt="cake"
             />
-            <h3
-              style={{
-                color: "red",
-                fontSize: "18px"
-              }}
-            >
+            <StyledH3>
               {props.cakeName}
-            </h3>
+            </StyledH3>
             <p
               style={{
                 color: "black",
@@ -104,14 +120,18 @@ class CakesList extends React.Component {
             >
               &#9733;
             </Button>
-          </Panel>
+          </CardPanel>
         </Link>
       </Col>
     );
   };
 
   render() {
-    return <Row>{this.state.cakesArray.map(this.showCakesList)}</Row>;
+    return (
+      <StyledPanel>
+          <Row>{this.state.cakesArray.map(this.showCakesList)}</Row>
+      </StyledPanel>
+    );
   }
 }
 

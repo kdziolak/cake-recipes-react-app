@@ -17,12 +17,13 @@ export default class App extends React.Component {
           <Header />
         </Row>
         <Row>
-          <Col md={2}>
+          <Col md={1}>
             <Route exact path="/" component={Sidebar} />
           </Col>
-          <Col md={1} />
-          <Col md={9}>
+          <Col md={10} mdOffset={1}>
             <Route exact path="/" component={CakesList} />
+          </Col>
+          <Col md={12}>
             <Route path="/dodaj" component={AddNewCake} />
             <Route path="/Przepisy/:id" component={CakeRecipe} />
           </Col>

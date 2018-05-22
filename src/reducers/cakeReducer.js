@@ -39,29 +39,21 @@ const cakes = (
           el.cakeName.toLowerCase().search(action.payload.toLowerCase()) !== -1
       );
       break;
-    case "FILTER_CAKES_BY_TIME": {
-      let arr = state.slice();
-      state = [];
-      action.payload.map(el => {
-        arr.map(elem => {
-          if (el === elem.time) {
-            state = [...state, elem];
-          }
-        });
-      });
-      break;
-    }
     case "FILTER_CAKES": {
       let arr = state.slice();
       state = [];
       action.payload.map(el => {
         arr.map(elem => {
-          if (el === elem.level || el === elem.time) {
+          if (
+            el === elem.level ||
+            el === elem.time ||
+            (el === "favorite" && elem.favorite === true)
+          ) {
             state = [...state, elem];
           }
         });
       });
-
+      state = [...new Set(state)];
       break;
     }
     case "MY_FAVORITE_CAKES": {

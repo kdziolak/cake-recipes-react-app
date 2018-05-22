@@ -9,8 +9,7 @@ import {
 import { connect } from "react-redux";
 import {
   filterCakesByCakeName,
-  filterCakesByTime,
-  filterCakesByLevel,
+  filterCakes,
   showFavoriteRecipes,
   getCakes,
   resetStateCakesList
@@ -21,6 +20,7 @@ class Sidebar extends React.Component {
     super(props);
 
     this.state = {
+      checkboxFavoriteValue: [""],
       checkboxLevelValue: ["", "", ""],
       checkboxTimeValue: ["", "", "", ""]
     };
@@ -41,33 +41,39 @@ class Sidebar extends React.Component {
     let whatClassName = e.target.parentNode.parentNode.parentNode.classList;
     let value = parseInt(e.target.name);
     let arr = [];
-    let concat = "";
+    let concat = [];
     let notValueCheckbox = true;
+    let {
+      checkboxFavoriteValue,
+      checkboxLevelValue,
+      checkboxTimeValue
+    } = this.state;
     if (whatClassName.contains("level-form")) {
-      arr = this.state.checkboxLevelValue.slice();
+      arr = checkboxLevelValue.slice();
     } else if (whatClassName.contains("time-form")) {
-      arr = this.state.checkboxTimeValue.slice();
+      arr = checkboxTimeValue.slice();
+    } else if (whatClassName.contains("favorite-form")) {
+      arr = checkboxFavoriteValue.slice();
     }
     if (e.target.checked) {
       arr[value] = e.target.value;
     } else {
       arr[value] = "";
     }
-    arr.map(el => {
+    if (whatClassName.contains("level-form")) {
+      concat = arr.concat(checkboxTimeValue, checkboxFavoriteValue);
+    } else if (whatClassName.contains("time-form")) {
+      concat = arr.concat(checkboxLevelValue, checkboxFavoriteValue);
+    } else if (whatClassName.contains("favorite-form")) {
+      concat = arr.concat(checkboxTimeValue, checkboxLevelValue);
+    }
+
+    concat.map(el => {
       if (el) {
         notValueCheckbox = false;
-
-        if (whatClassName.contains("level-form")) {
-          concat = arr.concat(this.state.checkboxTimeValue);
-          this.props.resetStateCakesList();
-          this.props.getCakes();
-          this.props.filterCakesByLevel(concat);
-        } else if (whatClassName.contains("time-form")) {
-          concat = arr.concat(this.state.checkboxLevelValue);
-          this.props.resetStateCakesList();
-          this.props.getCakes();
-          this.props.filterCakesByTime(concat);
-        }
+        this.props.resetStateCakesList();
+        this.props.getCakes();
+        this.props.filterCakes(concat);
       }
 
       if (notValueCheckbox) {
@@ -82,6 +88,10 @@ class Sidebar extends React.Component {
     } else if (whatClassName.contains("time-form")) {
       this.setState({
         checkboxTimeValue: arr
+      });
+    } else if (whatClassName.contains("favorite-form")) {
+      this.setState({
+        checkboxFavoriteValue: arr
       });
     }
   };
@@ -154,10 +164,11 @@ class Sidebar extends React.Component {
             style={{
               marginTop: "40px"
             }}
-            onClick={this.showFavoriteRecipes}
+            className="favorite-form"
+            onClick={this.handleCheckbox}
           >
             <ControlLabel>Ulubione przepisy:</ControlLabel>
-            <Checkbox name="0" value="pokaz">
+            <Checkbox name="0" value="favorite">
               Pokaż
             </Checkbox>
           </FormGroup>
@@ -176,8 +187,7 @@ const mapDispatchToProps = dispatch => {
     getCakes: () => dispatch(getCakes()),
     resetStateCakesList: () => dispatch(resetStateCakesList()),
     filterCakesByCakeName: value => dispatch(filterCakesByCakeName(value)),
-    filterCakesByTime: value => dispatch(filterCakesByTime(value)),
-    filterCakesByLevel: value => dispatch(filterCakesByLevel(value)),
+    filterCakes: value => dispatch(filterCakes(value)),
     showFavoriteRecipes: value => dispatch(showFavoriteRecipes(value))
   };
 };

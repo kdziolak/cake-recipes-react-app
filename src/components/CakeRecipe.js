@@ -1,8 +1,30 @@
 import React from "react";
 import { getCakes, resetStateCakesList } from "../actions/cakeActions";
 import { connect } from "react-redux";
-
-import { Panel, Row } from "react-bootstrap";
+import { Panel } from "react-bootstrap";
+import styled from "styled-components";
+const StyledH4 = styled.h4`
+  color: #4dd0e1;
+  font-size: 23px;
+`;
+const StyledH2 = styled.h4`
+  color: #00acc1;
+  font-size: 33px;
+  font-weight: bold;
+  letter-spacing: 1.3px;
+  text-shadow: 0 0 3px #006064;
+`;
+const StyledPanel = styled(Panel)`
+  padding: 30px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+`;
+const StyledParaUnderImg = styled.p`
+  text-align: center;
+  margin-top: 50px;
+  font-size: 18px;
+`;
 
 class CakeRecipe extends React.Component {
   constructor(props) {
@@ -32,41 +54,37 @@ class CakeRecipe extends React.Component {
       ingArray
     } = this.state.cake;
     return (
-      <Panel
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-around",
-          alignItems: "center"
-        }}
-      >
-        <img
-          style={{
-            width: "300px",
-            height: "200px",
-            marginRight: "100px"
-          }}
-          src={image}
-          alt="image cake"
-        />
+      <StyledPanel>
+        <div>
+          <img
+            style={{
+              width: "300px",
+              height: "200px",
+              marginRight: "100px"
+            }}
+            src={image}
+            alt="image cake"
+          />
+          <div>
+            <StyledParaUnderImg>
+              To ciasto przygotujesz w <strong>{time}ut.</strong>
+            </StyledParaUnderImg>
+            <StyledParaUnderImg>
+              To ciasto jest <strong> {level.replace("y", "e")} </strong> do
+              zrobienia.
+            </StyledParaUnderImg>
+          </div>
+        </div>
         <div className="text">
-          <h2>{cakeName}</h2>
+          <StyledH2>{cakeName}</StyledH2>
           <br />
-          <h4>Składniki:</h4>
+          <StyledH4>Składniki:</StyledH4>
           <ul>{ingArray.map(el => <li>{el}</li>)}</ul>
           <br />
-          <h4>Sposób przyrządzenia:</h4>
+          <StyledH4>Sposób przyrządzenia:</StyledH4>
           <p>{shortDescription}</p>
-          <br />
-          <p>
-            To ciasto przygotujesz w <strong>{time}ut.</strong>
-          </p>
-          <p>
-            To ciasto jest <strong> {level.replace("y", "e")} </strong> do
-            zrobienia.
-          </p>
         </div>
-      </Panel>
+      </StyledPanel>
     );
   }
 }
