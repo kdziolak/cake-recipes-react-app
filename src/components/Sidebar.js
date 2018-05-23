@@ -100,14 +100,16 @@ class Sidebar extends React.Component {
     return (
       <Panel
         style={{
+          marginTop: "60px",
           paddingTop: "20px",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          marginLeft: "-15px",
-          height: "85vh",
+          marginLeft: "-5px",
+          height: "92vh",
           width: "200px",
-          background: "#f9f9f9"
+          backgroundColor: "#F5F5F5",
+          position: 'fixed'
         }}
       >
         <form>

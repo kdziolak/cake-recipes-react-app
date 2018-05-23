@@ -81,14 +81,14 @@ class CakesList extends React.Component {
   showCakesList = (props, i) => {
     if (props.id === undefined) return;
     return (
-      <Col md={3} key={i}>
-        <Link
+      <Col sm={3} smOffset={0}  xs={8} xsOffset={2}  key={i}>
+        <Link 
           style={{
             textDecoration: "none"
           }}
           to={`/Przepisy/${props.id}`}
         >
-          <CardPanel
+          <CardPanel 
           >
             <StyledImage
               src={props.image}
@@ -128,9 +128,9 @@ class CakesList extends React.Component {
 
   render() {
     return (
-      <StyledPanel>
-          <Row>{this.state.cakesArray.map(this.showCakesList)}</Row>
-      </StyledPanel>
+      
+          <Row style={{marginTop: '70px'}}>{this.state.cakesArray.map(this.showCakesList)}</Row>
+      
     );
   }
 }

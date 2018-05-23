@@ -15,6 +15,9 @@ const StyledH2 = styled.h4`
   text-shadow: 0 0 3px #006064;
 `;
 const StyledPanel = styled(Panel)`
+  margin-top: 10%;
+  margin-left: 3%;
+  width: 94%;
   padding: 30px;
   display: flex;
   flex-direction: row;

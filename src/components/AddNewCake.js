@@ -126,9 +126,9 @@ export class AddNewCake extends React.Component {
 
   render() {
     return (
-      <Grid>
+      <Grid style={{ marginTop: "100px" }}>
         <Row>
-          <Col md={4}>
+          <Col md={4} mdOffset={2}>
             <form>
               <FormGroup
                 controleId="cakeName"
@@ -202,6 +202,14 @@ export class AddNewCake extends React.Component {
                 </FormControl>
               </FormGroup>
             </form>
+            {this.state.send ? (
+              <Alert bsStyle="danger" style={{ width: "300px" }}>
+                <strong>Proszę uzupełnić brakujące pola!</strong>
+              </Alert>
+            ) : null}
+            <Button bsStyle="success" onClick={this.addToRecipes}>
+              Dodaj do listy przepisów
+            </Button>
           </Col>
           <Col md={4}>
             <FormGroup validationState={this.state.valid.image}>
@@ -224,14 +232,6 @@ export class AddNewCake extends React.Component {
             </FormGroup>
           </Col>
         </Row>
-        {this.state.send ? (
-          <Alert bsStyle="danger" style={{ width: "300px" }}>
-            <strong>Proszę uzupełnić brakujące pola!</strong>
-          </Alert>
-        ) : null}
-        <Button bsStyle="success" onClick={this.addToRecipes}>
-          Dodaj do listy przepisów
-        </Button>
       </Grid>
     );
   }
