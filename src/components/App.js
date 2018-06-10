@@ -1,7 +1,7 @@
 import React from "react";
-import { connect } from "react-redux";
 import { Grid, Row, Col } from "react-bootstrap";
-import { Route, Redirect } from "react-router-dom";
+import { Route, Redirect, Switch } from "react-router-dom";
+import { connect } from "react-redux";
 
 import Header from "./Header";
 import CakesList from "./CakesList";
@@ -12,7 +12,6 @@ import LoginPage from "./LoginPage";
 
 export default class App extends React.Component {
   render() {
-    let loggedIn = false;
     return (
       <Grid fluid>
         <Row>
@@ -28,11 +27,7 @@ export default class App extends React.Component {
           <Col md={12}>
             <Route path="/dodaj" component={AddNewCake} />
             <Route path="/Przepisy/:id" component={CakeRecipe} />
-            <Route
-              exact
-              path="/logowanie"
-              render={() => (loggedIn ? <Redirect to="/" /> : <LoginPage />)}
-            />
+            <Route path="/logowanie" component={LoginPage} />
           </Col>
         </Row>
       </Grid>

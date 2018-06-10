@@ -1,72 +1,74 @@
 import React from "react";
-import { FormGroup, ControlLabel, FormControl, Button } from "react-bootstrap";
 import { connect } from "react-redux";
-import { loginToPage } from "../actions/loginActions";
-import styled from "styled-components";
-const StyledForm = styled.form`
-  margin-top: 25%;
-  margin-left: auto;
-  margin-right: auto;
-  width: 20%;
-`;
+import {
+  FormGroup,
+  ControlLabel,
+  FormControl,
+  Button,
+  Alert
+} from "react-bootstrap";
+import fire from "../firebase";
+import { Redirect } from "react-router-dom";
+import { signIn } from "../actions/signInActions";
 
 class LoginPage extends React.Component {
   constructor() {
     super();
-
     this.state = {
       email: "",
-      password: ""
+      password: "",
+      redirect: false,
+      error: {
+        message: ""
+      }
     };
   }
-
-  handleInput = e => {
-    switch (e.target.id) {
-      case "email": {
-        this.setState({
-          email: e.target.value
-        });
-        break;
-      }
-      case "password": {
-        this.setState({
-          password: e.target.value
-        });
-        break;
-      }
-    }
-  };
-
-  loggeIn = () => {
+  signIn = () => {
     let { email, password } = this.state;
-    this.props.loginToPage(email, password);
+    fire
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then(result => {
+        this.props.signIn(result);
+        this.setState({
+          redirect: true
+        });
+      })
+      .catch(error => {
+        this.setState({ error });
+      });
   };
-
   render() {
     return (
-      <StyledForm>
+      <form style={{ width: "40%", margin: "auto", marginTop: "20%" }}>
         <FormGroup>
-          <ControlLabel>Wprowadź adres email:</ControlLabel>
+          <ControlLabel>Email</ControlLabel>
           <FormControl
-            onChange={this.handleInput}
-            id="email"
+            onChange={event => this.setState({ email: event.target.value })}
             type="email"
-            placeholder="Email"
+            label="email"
+            placeholder="email"
           />
         </FormGroup>
         <FormGroup>
-          <ControlLabel>Wprowadź hasło:</ControlLabel>
+          <ControlLabel>Hasło</ControlLabel>
           <FormControl
-            onChange={this.handleInput}
-            id="password"
             type="password"
-            placeholder="Hasło"
+            label="password"
+            placeholder="password"
+            onChange={event => this.setState({ password: event.target.value })}
           />
         </FormGroup>
-        <Button bsStyle="primary" onClick={this.loggeIn}>
+        {this.state.error.message ? (
+          <Alert bsStyle="danger">
+            <strong>{this.state.error.message}</strong>
+          </Alert>
+        ) : null}
+        <Button onClick={this.signIn} bsStyle="primary">
           Zaloguj się
         </Button>
-      </StyledForm>
+        {this.state.redirect ? <Redirect to="/" /> : null}
+      </form>
     );
   }
 }
@@ -77,9 +79,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    loginToPage: (email, password) => {
-      dispatch(loginToPage(email, password));
-    }
+    signIn: user => dispatch(signIn(user))
   };
 };
 
