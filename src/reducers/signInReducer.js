@@ -12,6 +12,13 @@ const login = (
       };
       break;
     }
+    case "SIGNOUT": {
+      state = {
+        ...state,
+        login: false
+      };
+      break;
+    }
   }
 
   return state;

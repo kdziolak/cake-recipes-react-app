@@ -1,5 +1,13 @@
 import React from "react";
-import { Row, Col, Panel, Image, Button } from "react-bootstrap";
+import {
+  Row,
+  Col,
+  Panel,
+  Image,
+  Button,
+  Modal,
+  ButtonToolbar
+} from "react-bootstrap";
 import { connect } from "react-redux";
 import {
   getCakes,
@@ -15,13 +23,10 @@ const StyledPanel = styled(Panel)`
 const CardPanel = styled(Panel)`
   background-color: #fbfdfe;
   padding: 10px;
-  display: "flex";
+  display: flex;
   flex-direction: column;
-  jusify-content: center;
   align-items: center;
-  text-align: center;
-  min-height: 250px;
-  box-shadow: 0 0 4px 0px black
+  box-shadow: 0 0 4px 0px black;
   transition: 0.1s linear;
   &:hover {
     transform: scale(1.05);
@@ -31,10 +36,24 @@ const StyledImage = styled(Image)`
   border-radius: 50%;
   width: 60%;
   height: 110px;
-  box-shadow: 0 0 10px 0px black
+  box-shadow: 0 0 10px 0px black;
 `;
 const StyledH3 = styled.h3`
-  color: #26C6DA;
+  color: #26c6da;
+`;
+const ButtonContainer = styled.div`
+  margin-top: 10px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+`;
+const StyledButton = styled(Button)`
+  padding: 2px 7px 2px 7px;
+  margin-right: auto;
+  margin-bottom: 10px;
+  color: white;
+  font-size: 15px;
+  outline: none;
 `;
 
 class CakesList extends React.Component {
@@ -42,7 +61,8 @@ class CakesList extends React.Component {
     super(props);
 
     this.state = {
-      cakesArray: []
+      cakesArray: [],
+      hideModal: false
     };
   }
 
@@ -64,12 +84,25 @@ class CakesList extends React.Component {
     });
   }
 
-  handleButtonClick = e => {
+  removeCake = e => {
     e.preventDefault();
-    this.props.addToFavorite(e.target.parentNode.childNodes[1].textContent);
+    let cakeName =
+      e.target.parentNode.parentNode.parentNode.childNodes[1].textContent;
+    this.setState({
+      hideModal: true
+    });
+  };
+
+  addToFavorite = e => {
+    e.preventDefault();
+    this.props.addToFavorite(
+      e.target.parentNode.parentNode.childNodes[1].textContent
+    );
     let arr = this.state.cakesArray.slice();
     arr.forEach(el => {
-      if (el.cakeName === e.target.parentNode.childNodes[1].textContent) {
+      if (
+        el.cakeName === e.target.parentNode.parentNode.childNodes[1].textContent
+      ) {
         el.favorite = !el.favorite;
       }
     });
@@ -81,22 +114,16 @@ class CakesList extends React.Component {
   showCakesList = (props, i) => {
     if (props.id === undefined) return;
     return (
-      <Col sm={3} smOffset={0}  xs={8} xsOffset={2}  key={i}>
-        <Link 
+      <Col sm={3} smOffset={0} xs={8} xsOffset={2} key={i}>
+        <Link
           style={{
             textDecoration: "none"
           }}
           to={`/Przepisy/${props.id}`}
         >
-          <CardPanel 
-          >
-            <StyledImage
-              src={props.image}
-              alt="cake"
-            />
-            <StyledH3>
-              {props.cakeName}
-            </StyledH3>
+          <CardPanel>
+            <StyledImage src={props.image} alt="cake" />
+            <StyledH3>{props.cakeName}</StyledH3>
             <p
               style={{
                 color: "black",
@@ -105,21 +132,65 @@ class CakesList extends React.Component {
             >
               {props.prepareDescription}
             </p>
-            <Button
-              onClick={this.handleButtonClick}
-              style={{
-                padding: "1px 5px 1px 5px",
-                alignSelf: "left",
-                marginLeft: "10px",
-                marginBottom: "10px",
-                color: "white",
-                fontSize: "15px",
-                outline: "none"
-              }}
-              bsStyle={props.favorite ? "warning" : null}
-            >
-              &#9733;
-            </Button>
+            <ButtonContainer>
+              {this.props.login ? (
+                <ButtonToolbar>
+                  <StyledButton
+                    id="editButton"
+                    style={{ marginRight: "10px", outline: "none" }}
+                    bsStyle="primary"
+                    onClick={this.editCake}
+                  >
+                    <span className="fas fa-edit" />
+                  </StyledButton>
+
+                  <Modal show={this.state.hideModal}>
+                    <Modal.Header>
+                      <Modal.Title>Modal title</Modal.Title>
+                    </Modal.Header>
+
+                    <Modal.Body>One fine body...</Modal.Body>
+
+                    <Modal.Footer>
+                      <Button onClick={this.props.onHide}>Close</Button>
+                      <Button bsStyle="primary">Save changes</Button>
+                    </Modal.Footer>
+                  </Modal>
+                </ButtonToolbar>
+              ) : null}
+              {this.props.login ? (
+                <ButtonToolbar>
+                  <StyledButton
+                    id="removeButton"
+                    style={{ marginRight: "10px", outline: "none" }}
+                    bsStyle="danger"
+                    onClick={this.removeCake}
+                  >
+                    <span className="fas fa-trash-alt" />
+                  </StyledButton>
+
+                  <Modal show={this.state.hideModal}>
+                    <Modal.Header>
+                      <Modal.Title>Modal title</Modal.Title>
+                    </Modal.Header>
+
+                    <Modal.Body>One fine body...</Modal.Body>
+
+                    <Modal.Footer>
+                      <Button onClick={this.props.onHide}>Close</Button>
+                      <Button bsStyle="primary">Save changes</Button>
+                    </Modal.Footer>
+                  </Modal>
+                </ButtonToolbar>
+              ) : null}
+              <StyledButton
+                style={{ outline: "none" }}
+                onClick={this.addToFavorite}
+                bsStyle={props.favorite ? "warning" : null}
+              >
+                &#9733;
+              </StyledButton>
+            </ButtonContainer>
           </CardPanel>
         </Link>
       </Col>
@@ -128,16 +199,17 @@ class CakesList extends React.Component {
 
   render() {
     return (
-      
-          <Row style={{marginTop: '70px'}}>{this.state.cakesArray.map(this.showCakesList)}</Row>
-      
+      <Row style={{ marginTop: "70px" }}>
+        {this.state.cakesArray.map(this.showCakesList)}
+      </Row>
     );
   }
 }
 
 const mapStateToProps = state => {
   return {
-    cakesArray: state.cakes
+    cakesArray: state.cakes,
+    login: state.login.login
   };
 };
 
