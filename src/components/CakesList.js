@@ -62,7 +62,8 @@ class CakesList extends React.Component {
 
     this.state = {
       cakesArray: [],
-      hideModal: false
+      hideModal: false,
+      cakeNameToRemove: ""
     };
   }
 
@@ -84,13 +85,23 @@ class CakesList extends React.Component {
     });
   }
 
-  removeCake = e => {
+  handleClose = () => {
+    this.setState({ hideModal: false });
+  };
+
+  modalToRemoveCake = e => {
     e.preventDefault();
-    let cakeName =
-      e.target.parentNode.parentNode.parentNode.childNodes[1].textContent;
+    // let cakeName =
+    //   e.target.parentNode.parentNode.parentNode.childNodes[1].textContent;
+    // console.log(cakeName);
     this.setState({
+      // cakeNameToRemove: cakeName,
       hideModal: true
     });
+  };
+
+  handleDeleteCake = (e, id) => {
+    console.log(id);
   };
 
   addToFavorite = e => {
@@ -159,29 +170,14 @@ class CakesList extends React.Component {
                 </ButtonToolbar>
               ) : null}
               {this.props.login ? (
-                <ButtonToolbar>
-                  <StyledButton
-                    id="removeButton"
-                    style={{ marginRight: "10px", outline: "none" }}
-                    bsStyle="danger"
-                    onClick={this.removeCake}
-                  >
-                    <span className="fas fa-trash-alt" />
-                  </StyledButton>
-
-                  <Modal show={this.state.hideModal}>
-                    <Modal.Header>
-                      <Modal.Title>Modal title</Modal.Title>
-                    </Modal.Header>
-
-                    <Modal.Body>One fine body...</Modal.Body>
-
-                    <Modal.Footer>
-                      <Button onClick={this.props.onHide}>Close</Button>
-                      <Button bsStyle="primary">Save changes</Button>
-                    </Modal.Footer>
-                  </Modal>
-                </ButtonToolbar>
+                <StyledButton
+                  id="removeButton"
+                  style={{ marginRight: "10px", outline: "none" }}
+                  bsStyle="danger"
+                  onClick={this.modalToRemoveCake}
+                >
+                  <span className="fas fa-trash-alt" />
+                </StyledButton>
               ) : null}
               <StyledButton
                 style={{ outline: "none" }}
@@ -193,6 +189,37 @@ class CakesList extends React.Component {
             </ButtonContainer>
           </CardPanel>
         </Link>
+
+        <Modal show={this.state.hideModal} onHide={this.handleClose}>
+          <Modal.Header>
+            <Modal.Title>
+              <strong>Usunąć dane ciasto z listy?</strong>
+            </Modal.Title>
+          </Modal.Header>
+
+          <Modal.Body>
+            Brak możliwości powrotu do poprzedniego stanu!
+          </Modal.Body>
+
+          <Modal.Footer
+            style={{ display: "flex", justifyContent: "space-around" }}
+          >
+            <Button
+              bsStyle="danger"
+              style={{ width: "15%" }}
+              onClick={this.handleClose}
+            >
+              Nie
+            </Button>
+            <Button
+              bsStyle="success"
+              onClick={e => this.handleDeleteCake(e, props.id)}
+              style={{ width: "15%" }}
+            >
+              Tak
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </Col>
     );
   };
