@@ -70,6 +70,10 @@ const cakes = (
       state = [...arr, action.payload];
       break;
     }
+    case "REMOVE_CAKE": {
+      state = state.filter(e => e.ID_Cake === action.payload);
+      break;
+    }
   }
   return state;
 };

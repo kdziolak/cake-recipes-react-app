@@ -80,3 +80,16 @@ export function addToFavorite(cakeName) {
     }
   });
 }
+
+export function removeCake(id) {
+  let db = fire.database().ref("Recipes");
+  db.on("child_added", snap => {
+    if (snap.val().ID_Cake === id) {
+      db.child(snap.val().ID_Cake).remove();
+    }
+  });
+  return{
+    type: "REMOVE_CAKE",
+    payload: id
+  }
+}

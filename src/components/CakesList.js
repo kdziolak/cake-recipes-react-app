@@ -12,7 +12,8 @@ import { connect } from "react-redux";
 import {
   getCakes,
   resetStateCakesList,
-  addToFavorite
+  addToFavorite,
+  removeCake
 } from "../actions/cakeActions";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
@@ -63,7 +64,7 @@ class CakesList extends React.Component {
     this.state = {
       cakesArray: [],
       hideModal: false,
-      cakeNameToRemove: ""
+      cakeIdToRemove: ""
     };
   }
 
@@ -91,17 +92,17 @@ class CakesList extends React.Component {
 
   modalToRemoveCake = e => {
     e.preventDefault();
-    // let cakeName =
-    //   e.target.parentNode.parentNode.parentNode.childNodes[1].textContent;
-    // console.log(cakeName);
     this.setState({
-      // cakeNameToRemove: cakeName,
+      cakeIdToRemove: e.target.classList[0],
       hideModal: true
     });
   };
 
-  handleDeleteCake = (e, id) => {
-    console.log(id);
+  handleDeleteCake = () => {
+    this.props.removeCake(this.state.cakeIdToRemove);
+    this.setState({
+      hideModal: true
+    });
   };
 
   addToFavorite = e => {
@@ -154,24 +155,12 @@ class CakesList extends React.Component {
                   >
                     <span className="fas fa-edit" />
                   </StyledButton>
-
-                  <Modal show={this.state.hideModal}>
-                    <Modal.Header>
-                      <Modal.Title>Modal title</Modal.Title>
-                    </Modal.Header>
-
-                    <Modal.Body>One fine body...</Modal.Body>
-
-                    <Modal.Footer>
-                      <Button onClick={this.props.onHide}>Close</Button>
-                      <Button bsStyle="primary">Save changes</Button>
-                    </Modal.Footer>
-                  </Modal>
                 </ButtonToolbar>
               ) : null}
               {this.props.login ? (
                 <StyledButton
                   id="removeButton"
+                  className={props.id}
                   style={{ marginRight: "10px", outline: "none" }}
                   bsStyle="danger"
                   onClick={this.modalToRemoveCake}
@@ -213,7 +202,7 @@ class CakesList extends React.Component {
             </Button>
             <Button
               bsStyle="success"
-              onClick={e => this.handleDeleteCake(e, props.id)}
+              onClick={this.handleDeleteCake}
               style={{ width: "15%" }}
             >
               Tak
@@ -244,7 +233,8 @@ const mapDispatchToProps = dispatch => {
   return {
     getCakes: () => dispatch(getCakes()),
     resetStateCakesList: () => dispatch(resetStateCakesList()),
-    addToFavorite: cakeName => addToFavorite(cakeName)
+    addToFavorite: cakeName => addToFavorite(cakeName),
+    removeCake: id => removeCake(id)
   };
 };
 
