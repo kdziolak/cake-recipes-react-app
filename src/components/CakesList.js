@@ -57,6 +57,15 @@ const StyledButton = styled(Button)`
   outline: none;
 `;
 
+const StyledLink = styled(Link)`
+  padding: 2px 7px 2px 7px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  color: white;
+  font-size: 15px;
+  outline: none;
+`;
+
 class CakesList extends React.Component {
   constructor(props) {
     super(props);
@@ -64,11 +73,13 @@ class CakesList extends React.Component {
     this.state = {
       cakesArray: [],
       hideModal: false,
-      cakeIdToRemove: ""
+      cakeIdToRemove: "",
+      cakeIdToEdit: ""
     };
   }
 
   componentWillMount() {
+    this.props.resetStateCakesList();
     this.props.getCakes();
   }
 
@@ -87,22 +98,29 @@ class CakesList extends React.Component {
   }
 
   handleClose = () => {
-    this.setState({ hideModal: false });
+    this.setState({ hideModal: !this.state.hideModal });
   };
 
   modalToRemoveCake = e => {
     e.preventDefault();
     this.setState({
       cakeIdToRemove: e.target.classList[0],
-      hideModal: true
+      hideModal: !this.state.hideModal
     });
   };
 
   handleDeleteCake = () => {
-    this.props.removeCake(this.state.cakeIdToRemove);
-    this.setState({
-      hideModal: true
+    let promise = new Promise((res, rej) => {
+      res(this.props.removeCake(this.state.cakeIdToRemove));
     });
+    promise
+      .then(() => {
+        this.handleClose();
+      })
+      .then(() => {
+        this.props.resetStateCakesList();
+        this.props.getCakes();
+      });
   };
 
   addToFavorite = e => {
@@ -120,6 +138,13 @@ class CakesList extends React.Component {
     });
     this.setState({
       cakesArray: arr
+    });
+  };
+
+  editCake = e => {
+    e.preventDefault();
+    this.setState({
+      cakeIdToEdit: e.target.classList[0]
     });
   };
 
@@ -147,14 +172,9 @@ class CakesList extends React.Component {
             <ButtonContainer>
               {this.props.login ? (
                 <ButtonToolbar>
-                  <StyledButton
-                    id="editButton"
-                    style={{ marginRight: "10px", outline: "none" }}
-                    bsStyle="primary"
-                    onClick={this.editCake}
-                  >
+                  <StyledLink className="btn btn-primary" to={`/edytuj/${props.id}`}>
                     <span className="fas fa-edit" />
-                  </StyledButton>
+                  </StyledLink>
                 </ButtonToolbar>
               ) : null}
               {this.props.login ? (

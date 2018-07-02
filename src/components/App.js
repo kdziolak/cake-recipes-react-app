@@ -9,6 +9,7 @@ import AddNewCake from "./AddNewCake";
 import CakeRecipe from "./CakeRecipe";
 import Sidebar from "./Sidebar";
 import LoginPage from "./LoginPage";
+import EditCake from "./EditCake";
 
 export default class App extends React.Component {
   render() {
@@ -28,6 +29,7 @@ export default class App extends React.Component {
             <Route path="/dodaj" component={AddNewCake} />
             <Route path="/Przepisy/:id" component={CakeRecipe} />
             <Route path="/logowanie" component={LoginPage} />
+            <Route path="/edytuj/:id" component={EditCake} />
           </Col>
         </Row>
       </Grid>
